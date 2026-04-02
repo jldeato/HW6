@@ -1,0 +1,53 @@
+---
+title: "JD_HW6"
+author: "Jennifer Deaton"
+date: "2026-04-02"
+output: html_document
+---
+# load libraries 
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+```
+
+# load file
+```{r}
+load("/Users/jenniferdeaton/Desktop/DSC 502/HW 6/house_prices.rda")
+```
+
+# get year from date
+```{r}
+house_prices = house_prices %>% mutate(year = as.numeric(format(date, "%Y")))
+```
+
+# create plot of house prices per state and mark years using facet_wrap
+```{r}
+houseprices = ggplot(house_prices, aes(x = year, y = house_price_index, group = state)) + geom_line() + facet_wrap(~ state) + scale_x_continuous(breaks = c(1980, 2000, 2020), labels = c("'80", "'00", "'20"), limits = c(1980, 2020)) + labs(title = "House Price Index Trends by State", x = "Year", y = "House Price Index") + theme_minimal()
+```
+
+# show plot
+```{r}
+houseprices
+```
+
+# use gather to create measure and value for house_price_index and unemployment_perc, exclude other values
+```{r}
+house_reshaped = gather(house_prices, key = measure, value = value, -date, -state, -house_price_perc, -year)
+```
+
+# view head to confirm measure and value exist
+```{r}
+head(house_reshaped)
+```
+
+# use plot from part a to view house_reshaped for house_price_index and unemploy_perc
+```{r}
+housepricesreshaped = ggplot(house_reshaped, aes(x = year, y =  value, color = measure, group = measure)) +  geom_line() + facet_wrap(~ state) + scale_x_continuous(breaks = c(1980, 2000, 2020), labels = c("'80", "'00", "'20"), limits = c(1980, 2020)) + labs(title = "House Price Index Trends by State", x = "Year", y = "House Price Index") + theme_minimal()
+```
+
+# view plot
+```{r}
+housepricesreshaped
+```
+# the above plots are not great plots in my opinion.  rating percentage on the same scale as how much houses cost is a bad comparisonas the graphs do not accurately show the percentage as the other values are going towards 300 while percentage is to 1 so you can't really effectively see it.  it's also confusing to have 51 different graphs.  This could possibly have been better by comparing the percent increase or decrease of housing costs to the percentage of unemployment increase or decrease per state or even on a national average. 
